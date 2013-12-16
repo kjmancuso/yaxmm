@@ -1,55 +1,60 @@
 {% extends "base.html" %}
 {% block title %}Movies{% endblock %}
 {% block body %}
-  Number of movies in database: {{info.count}}
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Pic</th>
-          <th>Idx</th>
-          <th>Year</th>
-          <th>Runtime</th>
-          <th>Info</th>
-          <th>Links</th>
-          <th>Flagged</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% set count = 1 %}
-        {%- for movie in movies -%}
-        <tr>
-          <td>
-            {{count}}
-          </td>
-          <td>
-            <img src="{{movie.poster}}" class="img-rounded" height="100">
-          </td>
-          <td>
-            {{movie.idMovie}}
-          </td>
-          <td>
-            {{movie.year}}
-          </td>
-          <td>
-            {{movie.runtime}}
-          </td>
-          <td>
-            <b>Title:</b> {{movie.title}}
-            <br>
-            <b>Path:</b> {{movie.path}}
-          </td>
-          <td>
-            <a href="http://www.imdb.com/title/{{movie.imdb}}">IMDB</a>
-          </td>
-          <td>
-            <input type="checkbox"{% if movie.tagged %}checked{% endif %}>
-          </td>
-        </tr>
-        {% set count = count + 1 %}
-        {% endfor -%}
-      </table>
-    </tbody>
-  </div>
+Number of movies in database: {{info.count}}
+<div class="table-responsive">
+  <table class="table table-condensed table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Pic</th>
+        <th>Idx</th>
+        <th>Year</th>
+        <th>Runtime</th>
+        <th>Size</th>
+        <th>Info</th>
+        <th>Links</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set count = 1 %}
+      {%- for movie in movies -%}
+      <tr>
+        <td>
+          {{count}}
+        </td>
+        <td>
+          <center>
+          {% if posters[movie.id] -%}
+          <img src="{{posters[movie.id]}}" class="img-rounded" height="150">
+          {% else %}
+          <h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
+          {%- endif %}
+          </center>
+        </td>
+        <td>
+          {{movie.id}}
+        </td>
+        <td>
+          {{movie.year}}
+        </td>
+        <td>
+          {{movie.runtime}}
+        </td>
+        <td>
+        </td>
+        <td>
+          <b>Title:</b> {{movie.title}}
+          <br>
+          <b>Path:</b> {{movie.path}}
+        </td>
+        <td>
+          {% if movie.imdb_id %}<a href="http://www.imdb.com/title/{{movie.imdb_id}}">IMDB</a>{% endif %}
+        </td>
+      </tr>
+      {% set count = count + 1 %}
+      {% endfor -%}
+    </table>
+  </tbody>
+</div>
 {% endblock %}
