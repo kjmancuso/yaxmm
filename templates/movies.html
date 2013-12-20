@@ -13,6 +13,7 @@ Number of movies in database: {{info.count}}
         <th>Runtime</th>
         <th>Size</th>
         <th>Info</th>
+        <th>Codecs</th>
         <th>Links</th>
       </tr>
     </thead>
@@ -25,8 +26,8 @@ Number of movies in database: {{info.count}}
         </td>
         <td>
           <center>
-          {% if posters[movie.id] -%}
-          <img src="{{posters[movie.id]}}" class="img-rounded" height="150">
+          {% if movie.poster -%}
+          <img src="{{movie.poster}}" class="img-rounded" height="150">
           {% else %}
           <h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
           {%- endif %}
@@ -47,6 +48,8 @@ Number of movies in database: {{info.count}}
           <b>Title:</b> {{movie.title}}
           <br>
           <b>Path:</b> {{movie.path}}
+        </td>
+        <td>
         </td>
         <td>
           {% if movie.imdb_id %}<a href="http://www.imdb.com/title/{{movie.imdb_id}}">IMDB</a>{% endif %}
