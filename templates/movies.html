@@ -11,9 +11,9 @@ Number of movies in database: {{info.count}}
         <th>Idx</th>
         <th>Year</th>
         <th>Runtime</th>
-        <th>Size</th>
         <th>Info</th>
         <th>Codecs</th>
+        <th>Rating</th>
         <th>Links</th>
       </tr>
     </thead>
@@ -27,7 +27,7 @@ Number of movies in database: {{info.count}}
         <td>
           <center>
           {% if movie.poster -%}
-          <img src="{{movie.poster}}" class="img-rounded" height="150">
+          <img src="{{info.webroot}}/thumbs/{{movie.poster}}" class="img-rounded" height="150">
           {% else %}
           <h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
           {%- endif %}
@@ -40,9 +40,7 @@ Number of movies in database: {{info.count}}
           {{movie.year}}
         </td>
         <td>
-          {{movie.runtime}}
-        </td>
-        <td>
+          {{movie.stream.video.duration}}
         </td>
         <td>
           <b>Title:</b> {{movie.title}}
@@ -50,9 +48,13 @@ Number of movies in database: {{info.count}}
           <b>Path:</b> {{movie.path}}
         </td>
         <td>
+        <img src="{{info.webroot}}/icons/video/{{movie.stream.video.codec}}.png"</img><br>
+        <img src="{{info.webroot}}/icons/audio/{{movie.stream.audio.codec}}.png"</img>
         </td>
         <td>
-          {% if movie.imdb_id %}<a href="http://www.imdb.com/title/{{movie.imdb_id}}">IMDB</a>{% endif %}
+        </td>
+        <td>
+          {% if movie.imdb_id %}[<a href="http://www.imdb.com/title/{{movie.imdb_id}}">IMDB</a>]{% endif %}
         </td>
       </tr>
       {% set count = count + 1 %}

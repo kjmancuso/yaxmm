@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#import datetime
+import datetime
 import os
 import MySQLdb.cursors
 
@@ -10,10 +10,10 @@ from PIL import Image
 
 
 ## Configs
-thumbWebRoot = 'http://192.168.1.20/xbmc_thumbs'
+baseWebRoot = 'http://192.168.1.20/xbmc/'
 thumbRoot = '/mnt/data/xbmc/thumbs/'
 resizeThumbs = True
-resizedThumbRoot = '/var/www/xbmc_thumbs/'
+resizedThumbRoot = '/var/www/xbmc/thumbs/'
 ## DB Config
 db_host = 'localhost'
 db_user = 'xbmc'
@@ -51,11 +51,20 @@ def movies():
     movies = getMovies()
     movies = sorted(movies, key=lambda x: x['title'])
     info['count'] = len(movies)
+    info['webroot'] = baseWebRoot
     posters = getArt('WHERE type = "poster" AND media_type = "movie"')
+    streamDetails = getStreamDetails()
     for item in movies:
         poster = [row for row in posters if row['media_id'] == item['id']]
         if len(poster) > 0:
             item['poster'] = getPoster(poster[0]['url'])
+        stream = [row for row in streamDetails
+                  if row['idFile'] == item['idFile']]
+        item['stream'] = parseStreamDetails(stream)
+        duration = item['stream']['video']['duration']
+        item['stream']['video']['duration'] = (datetime.timedelta(0,
+                                               duration))
+
     return render_template('movies.html', navContext=navContext, movies=movies,
                            info=info)
 
@@ -128,12 +137,50 @@ def getArt(where=None):
     return art
 
 
+def getStreamDetails():
+    query = ('SELECT idFile, '
+             'iStreamType, '
+             'strVideoCodec, '
+             'fVideoAspect, '
+             'iVideoWidth, '
+             'iVideoHeight, '
+             'strAudioCodec, '
+             'iAudioChannels, '
+             'strAudioLanguage, '
+             'strSubtitleLanguage, '
+             'iVideoDuration from streamdetails')
+    cursor = mysql.get_db().cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(query)
+    stream = cursor.fetchall()
+
+    return stream
+
+
 ## Misc Junk Functions
+def parseStreamDetails(stream):
+    output = {}
+    for s in stream:
+        if s['iStreamType'] == 0:
+            output['video'] = {'codec': s['strVideoCodec'],
+                               'duration': s['iVideoDuration'],
+                               'height': s['iVideoHeight'],
+                               'width': s['iVideoWidth'],
+                               'aspect': s['fVideoAspect']}
+        elif s['iStreamType'] == 1:
+            output['audio'] = {'codec': s['strAudioCodec'],
+                               'channels': s['iAudioChannels'],
+                               'language': s['strAudioLanguage']}
+
+    print output['audio']
+    return output
+
+
 def getPoster(url):
     fileHash = get_crc32(url)
-    poster = '%s/%s/%s.jpg' % (thumbWebRoot, fileHash[0], fileHash)
+    poster = '%s/%s.jpg' % (fileHash[0], fileHash)
     if resizeThumbs:
         gen_thumb(fileHash)
+
     return poster
 
 
