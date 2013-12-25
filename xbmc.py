@@ -171,7 +171,6 @@ def parseStreamDetails(stream):
                                'channels': s['iAudioChannels'],
                                'language': s['strAudioLanguage']}
 
-    print output['audio']
     return output
 
 

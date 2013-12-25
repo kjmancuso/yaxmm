@@ -3,7 +3,7 @@
 {% block body %}
 Number of movies in database: {{info.count}}
 <div class="table-responsive">
-  <table class="table table-condensed table-bordered table-striped table-hover">
+  <table id="movietable" class="table table-condensed table-bordered table-striped table-hover tablesorter">
     <thead>
       <tr>
         <th>#</th>
@@ -51,7 +51,9 @@ Number of movies in database: {{info.count}}
         <img src="{{info.webroot}}/icons/video/{{movie.stream.video.codec}}.png"</img><br>
         <img src="{{info.webroot}}/icons/audio/{{movie.stream.audio.codec}}.png"</img>
         </td>
-        <td>
+        <td style="white-space: nowrap">
+         {{movie.rating|float}}<br>
+         <small>({{movie.votes}} votes)</small>
         </td>
         <td>
           {% if movie.imdb_id %}[<a href="http://www.imdb.com/title/{{movie.imdb_id}}">IMDB</a>]{% endif %}

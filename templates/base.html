@@ -13,5 +13,17 @@
   {% block body %}{% endblock %}
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+  {% if info.webroot %}
+  <script type="text/javascript" src="{{info.webroot}}/assets/jquery.tablesorter.min.js"></script>
+  {% endif %}
+  {% if movies %}
+  <script>
+    $(document).ready(function(){
+      $(function(){
+        $("#movietable").tablesorter();
+      });
+    });
+  </script>
+  {% endif %}
 </body>
 </html>
